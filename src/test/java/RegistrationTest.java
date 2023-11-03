@@ -12,6 +12,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import page_object_package.RegistrationPage;
 
 import java.io.File;
 import java.time.Duration;
@@ -45,28 +46,37 @@ public void setUpChrome(){
 
     WebDriver driver;
 
-    @Test
+    /*@Test
     public void clickOnPersonalCabinet(){
        //setUpChrome();
         setUpYandex();
         driver.get(MAIN_PAGE_URL);
         MainPage objMainPage = new MainPage(driver);
-       objMainPage.clickOnPersonalCabinet();
+        objMainPage.clickOnPersonalCabinet();
        // objMainPage.clickToAccountButton();
-    }
+    }*/
 
-    @Test
+  /*  @Test
     public void openLoginPage(){
         setUpYandex();
         driver.get(LOGIN_PAGE_URL);
         LoginPage objLoginPage =new LoginPage(driver);
         objLoginPage.findEntryTitle();
+    }*/
+
+    @Test
+    public void openRegistrationPage(){
+        setUpYandex();
+        driver.get(REGISTRATION_PAGE_URL);
+        RegistrationPage objRegPage = new RegistrationPage(driver);
+        objRegPage.fillInRegistrationForm("Daria", "dodo@ya.ru");
+        //objRegPage.
     }
 
-    @After
+ /*   @After
     public void teardown() {
         // Закрываем браузер
         driver.quit();
-    }
+    }*/
 
 }
