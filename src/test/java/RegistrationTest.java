@@ -1,7 +1,7 @@
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
+import page_object_package.LoginPage;
 import page_object_package.MainPage;
-import static page_object_package.Constants.MAIN_PAGE_URL;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,34 +18,55 @@ import java.time.Duration;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static page_object_package.Constants.*;
 
 
 public class RegistrationTest {
-
-      //  System.setProperty("webdriver.http.factory", "jdk-http-client");
+public void setUpChrome(){
+        System.setProperty("webdriver.http.factory", "jdk-http-client");
         ChromeDriverService service = new ChromeDriverService.Builder()
-                .usingDriverExecutable(new File("C:/Praktikum/chromedriver-win64/chromedriver.exe"))
+                .usingDriverExecutable(new File(CHROME_TEST_CHROMEDRIVER))
                 .build();
 
         ChromeOptions options = new ChromeOptions()
-                .setBinary("C:/Praktikum/chrome-win64/chrome.exe");
+                .setBinary(CHROME_TEST_BROWSER);
 
-    WebDriver    driver = new ChromeDriver(service, options);
+    driver = new ChromeDriver(service, options);}
 
-  //  WebDriver driver = new ChromeDriver();
+    public void setUpYandex(){
+        System.setProperty("webdriver.http.factory", "jdk-http-client");
+        ChromeDriverService service = new ChromeDriverService.Builder()
+                .usingDriverExecutable(new File(YANDEX_BROWSER_CHROMEDRIVER))
+                .build();
+        ChromeOptions options = new ChromeOptions()
+                .setBinary(YANDEX_BROWSER_PATH);
+        driver = new ChromeDriver(service, options);
+    }
+
+    WebDriver driver;
 
     @Test
     public void clickOnPersonalCabinet(){
+       //setUpChrome();
+        setUpYandex();
         driver.get(MAIN_PAGE_URL);
         MainPage objMainPage = new MainPage(driver);
        objMainPage.clickOnPersonalCabinet();
        // objMainPage.clickToAccountButton();
     }
 
-    /*@After
+    @Test
+    public void openLoginPage(){
+        setUpYandex();
+        driver.get(LOGIN_PAGE_URL);
+        LoginPage objLoginPage =new LoginPage(driver);
+        objLoginPage.findEntryTitle();
+    }
+
+    @After
     public void teardown() {
         // Закрываем браузер
         driver.quit();
     }
-*/
+
 }
