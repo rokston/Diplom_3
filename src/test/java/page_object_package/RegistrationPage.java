@@ -23,11 +23,18 @@ public class RegistrationPage {
     private By fieldPassword = By.xpath(".//div/input[@type = 'password']");
     private By buttonRegister = By.xpath(".//form/button[text()='Зарегистрироваться']");
 
+    private By entryLinkButton = By.className("Auth_link__1fOlj");
     private By errorPassword = By.xpath(".//div/p[@class='input__error text_type_main-default']");
 
 
     public RegistrationPage(WebDriver driver){
         this.driver = driver;
+    }
+
+    public void clickOnEntryLinkButton(){
+        WebElement element = driver.findElement(entryLinkButton);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);
+        driver.findElement(entryLinkButton).click();
     }
 
     public void fillInRegistrationForm(String name, String email, String password){
@@ -44,5 +51,9 @@ public class RegistrationPage {
 
     public By getErrorPassword() {
         return errorPassword;
+    }
+
+    public By getButtonRegister() {
+        return buttonRegister;
     }
 }
