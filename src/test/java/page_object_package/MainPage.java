@@ -18,6 +18,15 @@ public class MainPage {
     //кнопка входа в аккаунт на странице
     private By toAccountButton = By.xpath("//*[@id='root']/div/main/section[2]/div/button");
 
+    private By bunsLink = By.xpath(".//div/main/section/div/div/span[text()='Булки']");
+    private By saucesLink = By.xpath(".//div/main/section/div/div/span[text()='Соусы']");
+    private By fillingsLink = By.xpath(".//div/main/section/div/div/span[text()='Начинки']");
+
+    private By saucesTitle = By.xpath(".//div/main/section/div/h2[text()='Соусы']");
+    private By fillingsTitle = By.xpath(".//div/main/section/div/h2[text()='Начинки']");
+    private By bunsTitle = By.xpath(".//div/main/section/div/h2[text()='Булки']");
+
+    private By meteorBeef = By.xpath(".//div/main/section[1]/div[2]/ul[3]/a[2]/p");
 
     public MainPage(WebDriver driver){
         this.driver = driver;
@@ -30,4 +39,37 @@ public class MainPage {
         driver.findElement(toAccountButton).click(); //клик на кнопку входа в аккаунт на странице
     }
 
+    public void clickToBuns() {
+        driver.findElement(bunsLink).click(); //клик на кнопку
+    }
+
+
+    public void clickToSauces() {
+        driver.findElement(saucesLink).click();
+
+    }
+
+    public By getSaucesTitle() {
+        return saucesTitle;
+    }
+
+    public By getFillingsTitle() {
+        return fillingsTitle;
+    }
+
+    public By getBunsTitle() {
+        return bunsTitle;
+    }
+
+    public void clickToFillings() {
+        driver.findElement(fillingsLink).click(); //клик на кнопку
+     //   System.out.println(driver.findElement(fillingsLink).getText());
+    }
+
+    public By getMeteorBeef() {
+        return meteorBeef;
+    }
+    public void clickOnMeteorBeef(){
+        driver.findElement(meteorBeef).click();
+    }
 }
