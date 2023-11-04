@@ -111,6 +111,40 @@ public class LoginTest {
 
     }
 
+    @Test
+    public void loginPersonalCabinetTest(){
+        setUpYandex();
+        registerUser(driver);
+        driver.get(MAIN_PAGE_URL);
+        MainPage objMainPage =  new MainPage(driver);
+
+        objMainPage.clickOnPersonalCabinet();
+        LoginPage objLoginPage = new LoginPage(driver);
+        new WebDriverWait(driver, Duration.ofSeconds(10)).
+                until(ExpectedConditions.visibilityOfElementLocated(objLoginPage.getEntryTitle()));
+        objLoginPage.findEntryTitle();
+        objLoginPage.fillInLoginForm(email, password);
+        objLoginPage.clickOnEntryButton();
+
+
+        MainPageAuth objMainAuth = new MainPageAuth(driver);
+        new WebDriverWait(driver, Duration.ofSeconds(10)).
+                until(ExpectedConditions.visibilityOfElementLocated(objMainAuth.getButtonOrder()));
+
+        objMainAuth.clickOnPersonalCabinetLink();
+
+        ProfilePage objProfilePage = new ProfilePage(driver);
+        new WebDriverWait(driver, Duration.ofSeconds(10)).
+                until(ExpectedConditions.visibilityOfElementLocated(objProfilePage.getProfile()));
+        String tempString =
+                driver.findElement(objProfilePage.getProfile()).getText();
+        MatcherAssert.assertThat(tempString, startsWith("Профиль"));
+        tempString =
+                driver.findElement(objProfilePage.getOrderList()).getText();
+        MatcherAssert.assertThat(tempString, startsWith("История заказов"));
+
+    }
+
 
     @Test
     public void loginFromRegistrationPageLinkTest(){
