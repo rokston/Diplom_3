@@ -9,6 +9,8 @@ public class ProfilePage {
 
     private By orderList = By.xpath(".//main/div/nav/ul/li/a[text()='История заказов']");
     private By exitButton = By.xpath(".//main/div/nav/ul/li/button[text()='Выход']");
+    private By headerStellarBurgers = By.xpath(".//header/nav/div/a");
+    private By constructorLink = By.xpath(".//header/nav/ul/li/a/p[text()='Конструктор']");
 
 
     private WebDriver driver;
@@ -28,5 +30,13 @@ public class ProfilePage {
 
     public void clickOnExitButton(){
         driver.findElement(exitButton).click();
+    }
+
+    public void clickOnStellarBurgers(){
+        driver.findElement(headerStellarBurgers).click();
+    }
+
+    public void clickOnConstructorLink(){
+        driver.findElement(constructorLink).click();
     }
 }

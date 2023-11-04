@@ -1,23 +1,31 @@
-import org.hamcrest.MatcherAssert;
-import org.openqa.selenium.chrome.ChromeDriverService;
-import org.openqa.selenium.chrome.ChromeOptions;
-import page_object_package.*;
-import org.junit.After;
-import org.junit.Test;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.hamcrest.MatcherAssert;
+import org.junit.After;
 import org.junit.Before;
-import static io.restassured.RestAssured.given;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import page_object_package.*;
+
 import java.io.File;
 import java.time.Duration;
+import java.util.List;
+
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertEquals;
 import static page_object_package.Constants.*;
-public class LoginTest {
+
+public class ProfilePageTest {
+
 
     @Before
     public void setUp() {
@@ -57,36 +65,11 @@ public class LoginTest {
                 until(ExpectedConditions.visibilityOfElementLocated(objRegPage.getButtonRegister()));
         objRegPage.fillInRegistrationForm(name, email, password);
         objRegPage.clickOnRegisterButton();
-        }
-
-    @Test
-    public void loginFromMainPageAccountButtonTest(){
-        setUpYandex();
-        registerUser(driver);
-        driver.get(MAIN_PAGE_URL);
-        MainPage objMainPage =  new MainPage(driver);
-
-        objMainPage.clickToAccountButton();
-        LoginPage objLoginPage = new LoginPage(driver);
-        new WebDriverWait(driver, Duration.ofSeconds(10)).
-                until(ExpectedConditions.visibilityOfElementLocated(objLoginPage.getEntryTitle()));
-        objLoginPage.findEntryTitle();
-        objLoginPage.fillInLoginForm(email, password);
-        objLoginPage.clickOnEntryButton();
-
-
-        MainPageAuth objMainAuth = new MainPageAuth(driver);
-        new WebDriverWait(driver, Duration.ofSeconds(10)).
-                until(ExpectedConditions.visibilityOfElementLocated(objMainAuth.getButtonOrder()));
-        objMainAuth.scrollToOrderButton();
-        String tempString =
-                driver.findElement(objMainAuth.getButtonOrder()).getText();
-        MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));
-
     }
 
+
     @Test
-    public void loginFromMainPagePersonalCabinetTest(){
+    public void loginPersonalCabinetTest(){
         setUpYandex();
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
@@ -104,24 +87,36 @@ public class LoginTest {
         MainPageAuth objMainAuth = new MainPageAuth(driver);
         new WebDriverWait(driver, Duration.ofSeconds(10)).
                 until(ExpectedConditions.visibilityOfElementLocated(objMainAuth.getButtonOrder()));
-        objMainAuth.scrollToOrderButton();
+
+        objMainAuth.clickOnPersonalCabinetLink();
+
+        ProfilePage objProfilePage = new ProfilePage(driver);
+        new WebDriverWait(driver, Duration.ofSeconds(10)).
+                until(ExpectedConditions.visibilityOfElementLocated(objProfilePage.getProfile()));
         String tempString =
-                driver.findElement(objMainAuth.getButtonOrder()).getText();
-        MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));
+                driver.findElement(objProfilePage.getProfile()).getText();
+        MatcherAssert.assertThat(tempString, startsWith("Профиль"));
+        tempString =
+                driver.findElement(objProfilePage.getOrderList()).getText();
+        MatcherAssert.assertThat(tempString, startsWith("История заказов"));
+        objProfilePage.clickOnExitButton();
+        objLoginPage = new LoginPage(driver);
+        new WebDriverWait(driver, Duration.ofSeconds(10)).
+                until(ExpectedConditions.visibilityOfElementLocated(objLoginPage.getEntryTitle()));
+        tempString =
+                driver.findElement(objLoginPage.getEntryTitle()).getText();
+        MatcherAssert.assertThat(tempString, startsWith("Вход"));
 
     }
 
-
-
     @Test
-    public void loginFromRegistrationPageLinkTest(){
+    public void fromPersonalCabinetToMainPageTest(){
         setUpYandex();
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
-        driver.get(REGISTRATION_PAGE_URL);
-        RegistrationPage objRegPage =  new RegistrationPage(driver);
+        MainPage objMainPage =  new MainPage(driver);
 
-        objRegPage.clickOnEntryLinkButton();
+        objMainPage.clickOnPersonalCabinet();
         LoginPage objLoginPage = new LoginPage(driver);
         new WebDriverWait(driver, Duration.ofSeconds(10)).
                 until(ExpectedConditions.visibilityOfElementLocated(objLoginPage.getEntryTitle()));
@@ -133,21 +128,33 @@ public class LoginTest {
         MainPageAuth objMainAuth = new MainPageAuth(driver);
         new WebDriverWait(driver, Duration.ofSeconds(10)).
                 until(ExpectedConditions.visibilityOfElementLocated(objMainAuth.getButtonOrder()));
+
+        objMainAuth.clickOnPersonalCabinetLink();
+
+        ProfilePage objProfilePage = new ProfilePage(driver);
+        new WebDriverWait(driver, Duration.ofSeconds(10)).
+                until(ExpectedConditions.visibilityOfElementLocated(objProfilePage.getProfile()));
+
+        objProfilePage.clickOnStellarBurgers();
+        objMainAuth = new MainPageAuth(driver);
+        new WebDriverWait(driver, Duration.ofSeconds(10)).
+                until(ExpectedConditions.visibilityOfElementLocated(objMainAuth.getButtonOrder()));
         objMainAuth.scrollToOrderButton();
         String tempString =
                 driver.findElement(objMainAuth.getButtonOrder()).getText();
         MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));
+
 
     }
 
     @Test
-    public void loginFromForgotPasswordPageLinkTest(){
+    public void fromPersonalCabinetToConstructorTest(){
         setUpYandex();
         registerUser(driver);
-        driver.get(FORGOT_PASSWORD_URL);
-        ForgotPasswordPage objForgotPassPage =  new ForgotPasswordPage(driver);
+        driver.get(MAIN_PAGE_URL);
+        MainPage objMainPage =  new MainPage(driver);
 
-        objForgotPassPage.clickOnEntryLink();
+        objMainPage.clickOnPersonalCabinet();
         LoginPage objLoginPage = new LoginPage(driver);
         new WebDriverWait(driver, Duration.ofSeconds(10)).
                 until(ExpectedConditions.visibilityOfElementLocated(objLoginPage.getEntryTitle()));
@@ -159,14 +166,24 @@ public class LoginTest {
         MainPageAuth objMainAuth = new MainPageAuth(driver);
         new WebDriverWait(driver, Duration.ofSeconds(10)).
                 until(ExpectedConditions.visibilityOfElementLocated(objMainAuth.getButtonOrder()));
+
+        objMainAuth.clickOnPersonalCabinetLink();
+
+        ProfilePage objProfilePage = new ProfilePage(driver);
+        new WebDriverWait(driver, Duration.ofSeconds(10)).
+                until(ExpectedConditions.visibilityOfElementLocated(objProfilePage.getProfile()));
+
+        objProfilePage.clickOnConstructorLink();
+        objMainAuth = new MainPageAuth(driver);
+        new WebDriverWait(driver, Duration.ofSeconds(10)).
+                until(ExpectedConditions.visibilityOfElementLocated(objMainAuth.getButtonOrder()));
         objMainAuth.scrollToOrderButton();
         String tempString =
                 driver.findElement(objMainAuth.getButtonOrder()).getText();
         MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));
 
+
     }
-
-
 
 
 
@@ -216,7 +233,7 @@ public class LoginTest {
     public void userDelete(){
 
         deleteUser(email, password);
-     }
+    }
     @After
     public void teardown() {
         // Закрываем браузер
