@@ -20,15 +20,24 @@ public class RegistrationPage {
    private By fieldName = By.xpath(".//div/input[@name = 'name']");
    private By fieldEmail = By.xpath(".//div/main/div/form/fieldset[2]/div/div/input");
 
+    private By fieldPassword = By.xpath(".//div/input[@type = 'password']");
+    private By buttonRegister = By.xpath(".//form/button[text()='Зарегистрироваться']");
+
 
     public RegistrationPage(WebDriver driver){
         this.driver = driver;
     }
 
-    public void fillInRegistrationForm(String name, String email){
+    public void fillInRegistrationForm(String name, String email, String password){
         driver.findElement(fieldName).sendKeys(name);
         driver.findElement(fieldEmail).sendKeys(email);
+        driver.findElement(fieldPassword).sendKeys(password);
+    }
 
+    public void clickOnRegisterButton(){
+        WebElement element = driver.findElement(buttonRegister);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);
+        driver.findElement(buttonRegister).click();
     }
 
 
