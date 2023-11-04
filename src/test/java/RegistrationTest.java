@@ -1,3 +1,4 @@
+import org.hamcrest.MatcherAssert;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import page_object_package.*;
@@ -25,6 +26,7 @@ import java.io.File;
 import java.time.Duration;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static page_object_package.Constants.*;
 
@@ -58,26 +60,8 @@ public class RegistrationTest {
 
     WebDriver driver;
 
-    /*@Test
-    public void clickOnPersonalCabinet(){
-       //setUpChrome();
-        setUpYandex();
-        driver.get(MAIN_PAGE_URL);
-        MainPage objMainPage = new MainPage(driver);
-        objMainPage.clickOnPersonalCabinet();
-       // objMainPage.clickToAccountButton();
-    }*/
-
-  /*  @Test
-    public void openLoginPage(){
-        setUpYandex();
-        driver.get(LOGIN_PAGE_URL);
-        LoginPage objLoginPage =new LoginPage(driver);
-        objLoginPage.findEntryTitle();
-    }*/
-
-    @Test
-    public void openRegistrationPage(){
+     @Test
+    public void registrationOkTest(){
         setUpYandex();
         driver.get(REGISTRATION_PAGE_URL);
         RegistrationPage objRegPage = new RegistrationPage(driver);
@@ -86,8 +70,39 @@ public class RegistrationTest {
         String password = "пякпяк111";
         objRegPage.fillInRegistrationForm(name, email, password);
         objRegPage.clickOnRegisterButton();
-        deleteUser(email, password);
+        LoginPage objLoginPage = new LoginPage(driver);
+
+        new WebDriverWait(driver, Duration.ofSeconds(10)).
+                until(ExpectedConditions.visibilityOfElementLocated(objLoginPage.getEntryTitle()));
+        objLoginPage.findEntryTitle();
+        objLoginPage.fillInLoginForm(email, password);
+        objLoginPage.clickOnEntryButton();
+        MainPageAuth objMainAuth = new MainPageAuth(driver);
+        new WebDriverWait(driver, Duration.ofSeconds(10)).
+                until(ExpectedConditions.visibilityOfElementLocated(objMainAuth.getButtonOrder()));
+        objMainAuth.scrollToOrderButton();
+        String tempString =
+                driver.findElement(objMainAuth.getButtonOrder()).getText();
+        MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));
+       // deleteUser(email, password);
     }
+    @Test
+    public void registrationBadPasswordTest(){
+        setUpYandex();
+        driver.get(REGISTRATION_PAGE_URL);
+        RegistrationPage objRegPage = new RegistrationPage(driver);
+        String name = "Daria";
+        String email = "dodo112@ya.ru";
+        String password = "пякпя";
+        objRegPage.fillInRegistrationForm(name, email, password);
+        objRegPage.clickOnRegisterButton();
+        new WebDriverWait(driver, Duration.ofSeconds(10)).
+                until(ExpectedConditions.visibilityOfElementLocated(objRegPage.getErrorPassword()));
+
+        String tempString =
+                driver.findElement(objRegPage.getErrorPassword()).getText();
+        MatcherAssert.assertThat(tempString, startsWith("Некорректный пароль"));
+         }
 
     public String loginUser(String email, String password){ //авторизация пользователя, с целью получения токена
 
@@ -134,6 +149,17 @@ public class RegistrationTest {
     }
 
    @After
+    public void userDelete(){
+       String name = "Daria";
+       String email = "dodo112@ya.ru";
+       String password = "пякпяк111";
+
+       deleteUser(email, password);
+
+       password = "пякпя";
+       deleteUser(email, password);
+   }
+  @After
     public void teardown() {
         // Закрываем браузер
         driver.quit();

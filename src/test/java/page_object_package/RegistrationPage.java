@@ -23,6 +23,8 @@ public class RegistrationPage {
     private By fieldPassword = By.xpath(".//div/input[@type = 'password']");
     private By buttonRegister = By.xpath(".//form/button[text()='Зарегистрироваться']");
 
+    private By errorPassword = By.xpath(".//div/p[@class='input__error text_type_main-default']");
+
 
     public RegistrationPage(WebDriver driver){
         this.driver = driver;
@@ -40,5 +42,7 @@ public class RegistrationPage {
         driver.findElement(buttonRegister).click();
     }
 
-
+    public By getErrorPassword() {
+        return errorPassword;
+    }
 }
