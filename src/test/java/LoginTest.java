@@ -142,6 +142,14 @@ public class LoginTest {
         tempString =
                 driver.findElement(objProfilePage.getOrderList()).getText();
         MatcherAssert.assertThat(tempString, startsWith("История заказов"));
+        objProfilePage.clickOnExitButton();
+        objLoginPage = new LoginPage(driver);
+        new WebDriverWait(driver, Duration.ofSeconds(10)).
+                until(ExpectedConditions.visibilityOfElementLocated(objLoginPage.getEntryTitle()));
+        tempString =
+                driver.findElement(objLoginPage.getEntryTitle()).getText();
+        MatcherAssert.assertThat(tempString, startsWith("Вход"));
+
 
     }
 

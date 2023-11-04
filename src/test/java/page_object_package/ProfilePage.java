@@ -8,6 +8,7 @@ public class ProfilePage {
     private By profile = By.xpath(".//main/div/nav/ul/li/a[text()='Профиль']");
 
     private By orderList = By.xpath(".//main/div/nav/ul/li/a[text()='История заказов']");
+    private By exitButton = By.xpath(".//main/div/nav/ul/li/button[text()='Выход']");
 
 
     private WebDriver driver;
@@ -23,5 +24,9 @@ public class ProfilePage {
 
     public By getOrderList() {
         return orderList;
+    }
+
+    public void clickOnExitButton(){
+        driver.findElement(exitButton).click();
     }
 }
