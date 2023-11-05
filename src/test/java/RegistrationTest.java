@@ -25,6 +25,14 @@ public class RegistrationTest {
         RestAssured.baseURI = ApiEndpoint.BASE_ADDRESS;
     }
 
+    public void setUpBrowser(){
+        String browserType = Browser.BROWSER;
+        if (browserType.equals("Yandex")){
+            setUpYandex();
+        } else {
+            setUpChrome();
+        }
+    }
     public void setUpChrome(){
         System.setProperty("webdriver.http.factory", "jdk-http-client");
         ChromeDriverService service = new ChromeDriverService.Builder()
@@ -50,7 +58,7 @@ public class RegistrationTest {
 
      @Test
     public void registrationOkTest(){
-        setUpYandex();
+        setUpBrowser();
         driver.get(REGISTRATION_PAGE_URL);
         RegistrationPage objRegPage = new RegistrationPage(driver);
         String name = "Daria";
@@ -76,7 +84,7 @@ public class RegistrationTest {
     }
     @Test
     public void registrationBadPasswordTest(){
-        setUpYandex();
+        setUpBrowser();
         driver.get(REGISTRATION_PAGE_URL);
         RegistrationPage objRegPage = new RegistrationPage(driver);
         String name = "Daria";

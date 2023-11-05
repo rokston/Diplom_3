@@ -32,6 +32,14 @@ public class ProfilePageTest {
         RestAssured.baseURI = ApiEndpoint.BASE_ADDRESS;
     }
 
+    public void setUpBrowser(){
+        String browserType = Browser.BROWSER;
+        if (browserType.equals("Yandex")){
+            setUpYandex();
+        } else {
+            setUpChrome();
+        }
+    }
     public void setUpChrome(){
         System.setProperty("webdriver.http.factory", "jdk-http-client");
         ChromeDriverService service = new ChromeDriverService.Builder()
@@ -70,7 +78,7 @@ public class ProfilePageTest {
 
     @Test
     public void loginPersonalCabinetTest(){
-        setUpYandex();
+        setUpBrowser();
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
         MainPage objMainPage =  new MainPage(driver);
@@ -111,7 +119,7 @@ public class ProfilePageTest {
 
     @Test
     public void fromPersonalCabinetToMainPageTest(){
-        setUpYandex();
+        setUpBrowser();
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
         MainPage objMainPage =  new MainPage(driver);
@@ -149,7 +157,7 @@ public class ProfilePageTest {
 
     @Test
     public void fromPersonalCabinetToConstructorTest(){
-        setUpYandex();
+        setUpBrowser();
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
         MainPage objMainPage =  new MainPage(driver);

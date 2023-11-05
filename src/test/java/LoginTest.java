@@ -14,6 +14,8 @@ import org.junit.Before;
 import static io.restassured.RestAssured.given;
 import java.io.File;
 import java.time.Duration;
+
+import static java.util.function.Predicate.isEqual;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static page_object_package.Constants.*;
@@ -23,6 +25,15 @@ public class LoginTest {
     public void setUp() {
         RestAssured.baseURI = ApiEndpoint.BASE_ADDRESS;
     }
+
+    public void setUpBrowser(){
+        String browserType = Browser.BROWSER;
+        if (browserType.equals("Yandex")){
+           setUpYandex();
+        } else {
+            setUpChrome();
+        }
+        }
 
     public void setUpChrome(){
         System.setProperty("webdriver.http.factory", "jdk-http-client");
@@ -61,7 +72,7 @@ public class LoginTest {
 
     @Test
     public void loginFromMainPageAccountButtonTest(){
-        setUpYandex();
+        setUpBrowser();
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
         MainPage objMainPage =  new MainPage(driver);
@@ -87,7 +98,7 @@ public class LoginTest {
 
     @Test
     public void loginFromMainPagePersonalCabinetTest(){
-        setUpYandex();
+        setUpBrowser();
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
         MainPage objMainPage =  new MainPage(driver);
@@ -115,7 +126,7 @@ public class LoginTest {
 
     @Test
     public void loginFromRegistrationPageLinkTest(){
-        setUpYandex();
+        setUpBrowser();
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
         driver.get(REGISTRATION_PAGE_URL);
@@ -142,11 +153,10 @@ public class LoginTest {
 
     @Test
     public void loginFromForgotPasswordPageLinkTest(){
-        setUpYandex();
+        setUpBrowser();
         registerUser(driver);
         driver.get(FORGOT_PASSWORD_URL);
         ForgotPasswordPage objForgotPassPage =  new ForgotPasswordPage(driver);
-
         objForgotPassPage.clickOnEntryLink();
         LoginPage objLoginPage = new LoginPage(driver);
         new WebDriverWait(driver, Duration.ofSeconds(10)).
