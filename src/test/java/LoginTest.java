@@ -1,3 +1,4 @@
+import io.qameta.allure.Step;
 import org.hamcrest.MatcherAssert;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -25,7 +26,7 @@ public class LoginTest {
     public void setUp() {
         RestAssured.baseURI = ApiEndpoint.BASE_ADDRESS;
     }
-
+    @Step("Сетап браузера")
     public void setUpBrowser(){
         String browserType = Browser.BROWSER;
         if (browserType.equals("Yandex")){
@@ -34,7 +35,7 @@ public class LoginTest {
             setUpChrome();
         }
         }
-
+    @Step("Сетап браузера Хром")
     public void setUpChrome(){
         System.setProperty("webdriver.http.factory", "jdk-http-client");
         ChromeDriverService service = new ChromeDriverService.Builder()
@@ -46,6 +47,7 @@ public class LoginTest {
 
         driver = new ChromeDriver(service, options);}
 
+    @Step("Сетап браузера Яндекс")
     public void setUpYandex(){
         System.setProperty("webdriver.http.factory", "jdk-http-client");
         ChromeDriverService service = new ChromeDriverService.Builder()
@@ -57,10 +59,11 @@ public class LoginTest {
     }
 
     WebDriver driver;
-    String name = "Daria";
+    String name = "Daria"; //данные тестового пользователя
     String email = "dodo112@ya.ru";
     String password = "пякпяк111";
 
+    @Step("Регистрируемся как пользователь")
     public void registerUser(WebDriver driver){
         driver.get(REGISTRATION_PAGE_URL);
         RegistrationPage objRegPage = new RegistrationPage(driver);
@@ -71,7 +74,7 @@ public class LoginTest {
         }
 
     @Test
-    public void loginFromMainPageAccountButtonTest(){
+    public void loginFromMainPageAccountButtonTest(){//логин через кнопку Войти в аккаунт
         setUpBrowser();
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
@@ -92,12 +95,12 @@ public class LoginTest {
         objMainAuth.scrollToOrderButton();
         String tempString =
                 driver.findElement(objMainAuth.getButtonOrder()).getText();
-        MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));
+        MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));//логин успешен, если нашли эту кнопку
 
     }
 
     @Test
-    public void loginFromMainPagePersonalCabinetTest(){
+    public void loginFromMainPagePersonalCabinetTest(){//логин через Персональный кабинет
         setUpBrowser();
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
@@ -118,14 +121,14 @@ public class LoginTest {
         objMainAuth.scrollToOrderButton();
         String tempString =
                 driver.findElement(objMainAuth.getButtonOrder()).getText();
-        MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));
+        MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));//логин успешен, если нашли эту кнопку
 
     }
 
 
 
     @Test
-    public void loginFromRegistrationPageLinkTest(){
+    public void loginFromRegistrationPageLinkTest(){//логин через ссылку на странице регистрации
         setUpBrowser();
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
@@ -147,12 +150,12 @@ public class LoginTest {
         objMainAuth.scrollToOrderButton();
         String tempString =
                 driver.findElement(objMainAuth.getButtonOrder()).getText();
-        MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));
+        MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));//логин успешен, если нашли эту кнопку
 
     }
 
     @Test
-    public void loginFromForgotPasswordPageLinkTest(){
+    public void loginFromForgotPasswordPageLinkTest(){//логин успешен по ссылке со страницы забытого пароля
         setUpBrowser();
         registerUser(driver);
         driver.get(FORGOT_PASSWORD_URL);
@@ -172,14 +175,14 @@ public class LoginTest {
         objMainAuth.scrollToOrderButton();
         String tempString =
                 driver.findElement(objMainAuth.getButtonOrder()).getText();
-        MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));
+        MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));//логин успешен, если нашли эту кнопку
 
     }
 
 
 
 
-
+    @Step("Авторизация пользователя с целью получения токена")
     public String loginUser(String email, String password){ //авторизация пользователя, с целью получения токена
 
         Credentials credentials = new Credentials(email, password);
@@ -201,7 +204,7 @@ public class LoginTest {
         }
         return userToken;
     }
-
+    @Step("Удаление пользователя с токеном")
     public void deleteUser(String email, String password) {
         String userToken = loginUser(email, password);
         if (userToken != null)  {

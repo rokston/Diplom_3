@@ -1,3 +1,4 @@
+import io.qameta.allure.Step;
 import org.hamcrest.MatcherAssert;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -25,6 +26,7 @@ public class RegistrationTest {
         RestAssured.baseURI = ApiEndpoint.BASE_ADDRESS;
     }
 
+    @Step("Сетап браузера")
     public void setUpBrowser(){
         String browserType = Browser.BROWSER;
         if (browserType.equals("Yandex")){
@@ -33,6 +35,7 @@ public class RegistrationTest {
             setUpChrome();
         }
     }
+    @Step("Сетап браузера Хром")
     public void setUpChrome(){
         System.setProperty("webdriver.http.factory", "jdk-http-client");
         ChromeDriverService service = new ChromeDriverService.Builder()
@@ -44,6 +47,7 @@ public class RegistrationTest {
 
     driver = new ChromeDriver(service, options);}
 
+    @Step("Сетап браузера Яндекс")
     public void setUpYandex(){
         System.setProperty("webdriver.http.factory", "jdk-http-client");
         ChromeDriverService service = new ChromeDriverService.Builder()
@@ -57,49 +61,50 @@ public class RegistrationTest {
     WebDriver driver;
 
      @Test
-    public void registrationOkTest(){
+    public void registrationOkTest(){//успешная регистрация
         setUpBrowser();
         driver.get(REGISTRATION_PAGE_URL);
         RegistrationPage objRegPage = new RegistrationPage(driver);
         String name = "Daria";
         String email = "dodo112@ya.ru";
         String password = "пякпяк111";
-        objRegPage.fillInRegistrationForm(name, email, password);
-        objRegPage.clickOnRegisterButton();
+        objRegPage.fillInRegistrationForm(name, email, password);//заполнили форму
+        objRegPage.clickOnRegisterButton();//нажали кнопку отправки данных
         LoginPage objLoginPage = new LoginPage(driver);
 
         new WebDriverWait(driver, Duration.ofSeconds(10)).
                 until(ExpectedConditions.visibilityOfElementLocated(objLoginPage.getEntryTitle()));
-        objLoginPage.findEntryTitle();
-        objLoginPage.fillInLoginForm(email, password);
-        objLoginPage.clickOnEntryButton();
+        objLoginPage.findEntryTitle();//успешен, если нашли заголовок Вход
+        objLoginPage.fillInLoginForm(email, password);//заполнить форму логина
+        objLoginPage.clickOnEntryButton();//нажать кнопку входа
         MainPageAuth objMainAuth = new MainPageAuth(driver);
         new WebDriverWait(driver, Duration.ofSeconds(10)).
                 until(ExpectedConditions.visibilityOfElementLocated(objMainAuth.getButtonOrder()));
         objMainAuth.scrollToOrderButton();
         String tempString =
                 driver.findElement(objMainAuth.getButtonOrder()).getText();
-        MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));
-       // deleteUser(email, password);
+        MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));//успешен, если нашли эту кнопку
+
     }
     @Test
-    public void registrationBadPasswordTest(){
+    public void registrationBadPasswordTest(){//регистрация с коротким паролем, неудачная
         setUpBrowser();
         driver.get(REGISTRATION_PAGE_URL);
         RegistrationPage objRegPage = new RegistrationPage(driver);
         String name = "Daria";
         String email = "dodo112@ya.ru";
-        String password = "пякпя";
+        String password = "пякпя";//короткий пароль
         objRegPage.fillInRegistrationForm(name, email, password);
-        objRegPage.clickOnRegisterButton();
+        objRegPage.clickOnRegisterButton();//заполнифи форму, отправили данные
         new WebDriverWait(driver, Duration.ofSeconds(10)).
                 until(ExpectedConditions.visibilityOfElementLocated(objRegPage.getErrorPassword()));
 
         String tempString =
                 driver.findElement(objRegPage.getErrorPassword()).getText();
-        MatcherAssert.assertThat(tempString, startsWith("Некорректный пароль"));
+        MatcherAssert.assertThat(tempString, startsWith("Некорректный пароль"));//ожидаемая ошибка
          }
 
+    @Step("Авторизация пользователя с целью получения токена")
     public String loginUser(String email, String password){ //авторизация пользователя, с целью получения токена
 
         Credentials credentials = new Credentials(email, password);
@@ -122,6 +127,7 @@ public class RegistrationTest {
         return userToken;
     }
 
+    @Step("Удаление пользователя с токеном")
     public void deleteUser(String email, String password) {
         String userToken = loginUser(email, password);
         if (userToken != null)  {

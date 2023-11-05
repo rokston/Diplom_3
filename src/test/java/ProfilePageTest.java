@@ -1,4 +1,5 @@
 
+import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.hamcrest.MatcherAssert;
@@ -26,12 +27,11 @@ import static page_object_package.Constants.*;
 
 public class ProfilePageTest {
 
-
     @Before
     public void setUp() {
         RestAssured.baseURI = ApiEndpoint.BASE_ADDRESS;
     }
-
+    @Step("Сетап браузера")
     public void setUpBrowser(){
         String browserType = Browser.BROWSER;
         if (browserType.equals("Yandex")){
@@ -40,6 +40,7 @@ public class ProfilePageTest {
             setUpChrome();
         }
     }
+    @Step("Сетап браузера Хром")
     public void setUpChrome(){
         System.setProperty("webdriver.http.factory", "jdk-http-client");
         ChromeDriverService service = new ChromeDriverService.Builder()
@@ -51,6 +52,7 @@ public class ProfilePageTest {
 
         driver = new ChromeDriver(service, options);}
 
+    @Step("Сетап браузера Яндекс")
     public void setUpYandex(){
         System.setProperty("webdriver.http.factory", "jdk-http-client");
         ChromeDriverService service = new ChromeDriverService.Builder()
@@ -62,10 +64,11 @@ public class ProfilePageTest {
     }
 
     WebDriver driver;
-    String name = "Daria";
+    String name = "Daria";//данные тестового пользователя
     String email = "dodo112@ya.ru";
     String password = "пякпяк111";
 
+    @Step("Регистрируемся как пользователь")
     public void registerUser(WebDriver driver){
         driver.get(REGISTRATION_PAGE_URL);
         RegistrationPage objRegPage = new RegistrationPage(driver);
@@ -77,43 +80,43 @@ public class ProfilePageTest {
 
 
     @Test
-    public void loginPersonalCabinetTest(){
+    public void loginPersonalCabinetTest(){//логин в Персональный кабинет, страница профиля и выход
         setUpBrowser();
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
         MainPage objMainPage =  new MainPage(driver);
 
-        objMainPage.clickOnPersonalCabinet();
+        objMainPage.clickOnPersonalCabinet();//клик на Персональный кабинет
         LoginPage objLoginPage = new LoginPage(driver);
         new WebDriverWait(driver, Duration.ofSeconds(10)).
                 until(ExpectedConditions.visibilityOfElementLocated(objLoginPage.getEntryTitle()));
         objLoginPage.findEntryTitle();
-        objLoginPage.fillInLoginForm(email, password);
-        objLoginPage.clickOnEntryButton();
+        objLoginPage.fillInLoginForm(email, password);//заполнение формы
+        objLoginPage.clickOnEntryButton();//клик на кнопку входа
 
 
         MainPageAuth objMainAuth = new MainPageAuth(driver);
-        new WebDriverWait(driver, Duration.ofSeconds(10)).
+        new WebDriverWait(driver, Duration.ofSeconds(10)).//логин успешен, если нашли эту кнопку
                 until(ExpectedConditions.visibilityOfElementLocated(objMainAuth.getButtonOrder()));
 
-        objMainAuth.clickOnPersonalCabinetLink();
+        objMainAuth.clickOnPersonalCabinetLink();//клик на линк Персональный кабинет
 
         ProfilePage objProfilePage = new ProfilePage(driver);
-        new WebDriverWait(driver, Duration.ofSeconds(10)).
+        new WebDriverWait(driver, Duration.ofSeconds(10)).//ждем открытия страницы Профиля
                 until(ExpectedConditions.visibilityOfElementLocated(objProfilePage.getProfile()));
         String tempString =
                 driver.findElement(objProfilePage.getProfile()).getText();
-        MatcherAssert.assertThat(tempString, startsWith("Профиль"));
+        MatcherAssert.assertThat(tempString, startsWith("Профиль"));//вход успешен, если нашли эту кнопку
         tempString =
                 driver.findElement(objProfilePage.getOrderList()).getText();
-        MatcherAssert.assertThat(tempString, startsWith("История заказов"));
-        objProfilePage.clickOnExitButton();
+        MatcherAssert.assertThat(tempString, startsWith("История заказов"));//вход успешен, если нашли эту кнопку
+        objProfilePage.clickOnExitButton();//жмем на кнопку Выход
         objLoginPage = new LoginPage(driver);
         new WebDriverWait(driver, Duration.ofSeconds(10)).
                 until(ExpectedConditions.visibilityOfElementLocated(objLoginPage.getEntryTitle()));
         tempString =
                 driver.findElement(objLoginPage.getEntryTitle()).getText();
-        MatcherAssert.assertThat(tempString, startsWith("Вход"));
+        MatcherAssert.assertThat(tempString, startsWith("Вход"));//выход успешен, если нашли эту кнопку
 
     }
 
@@ -124,28 +127,28 @@ public class ProfilePageTest {
         driver.get(MAIN_PAGE_URL);
         MainPage objMainPage =  new MainPage(driver);
 
-        objMainPage.clickOnPersonalCabinet();
+        objMainPage.clickOnPersonalCabinet();//клик на линк Персональный кабинет
         LoginPage objLoginPage = new LoginPage(driver);
         new WebDriverWait(driver, Duration.ofSeconds(10)).
                 until(ExpectedConditions.visibilityOfElementLocated(objLoginPage.getEntryTitle()));
         objLoginPage.findEntryTitle();
         objLoginPage.fillInLoginForm(email, password);
-        objLoginPage.clickOnEntryButton();
+        objLoginPage.clickOnEntryButton();//заполнение формы и нажатие на кнопку входа
 
 
         MainPageAuth objMainAuth = new MainPageAuth(driver);
-        new WebDriverWait(driver, Duration.ofSeconds(10)).
+        new WebDriverWait(driver, Duration.ofSeconds(10)).//логин успешен, если нашли эту кнопку
                 until(ExpectedConditions.visibilityOfElementLocated(objMainAuth.getButtonOrder()));
 
-        objMainAuth.clickOnPersonalCabinetLink();
+        objMainAuth.clickOnPersonalCabinetLink();//переход в Персональный кабинет
 
         ProfilePage objProfilePage = new ProfilePage(driver);
-        new WebDriverWait(driver, Duration.ofSeconds(10)).
+        new WebDriverWait(driver, Duration.ofSeconds(10)).//успешен, если нашли эту кнопку
                 until(ExpectedConditions.visibilityOfElementLocated(objProfilePage.getProfile()));
 
-        objProfilePage.clickOnStellarBurgers();
+        objProfilePage.clickOnStellarBurgers(); //клик на Stellar Burgers в заголовке
         objMainAuth = new MainPageAuth(driver);
-        new WebDriverWait(driver, Duration.ofSeconds(10)).
+        new WebDriverWait(driver, Duration.ofSeconds(10)).//успешно, если нашли эту кнопку
                 until(ExpectedConditions.visibilityOfElementLocated(objMainAuth.getButtonOrder()));
         objMainAuth.scrollToOrderButton();
         String tempString =
@@ -162,39 +165,39 @@ public class ProfilePageTest {
         driver.get(MAIN_PAGE_URL);
         MainPage objMainPage =  new MainPage(driver);
 
-        objMainPage.clickOnPersonalCabinet();
+        objMainPage.clickOnPersonalCabinet();//клик на линк Персональный кабинет
         LoginPage objLoginPage = new LoginPage(driver);
         new WebDriverWait(driver, Duration.ofSeconds(10)).
                 until(ExpectedConditions.visibilityOfElementLocated(objLoginPage.getEntryTitle()));
         objLoginPage.findEntryTitle();
         objLoginPage.fillInLoginForm(email, password);
-        objLoginPage.clickOnEntryButton();
+        objLoginPage.clickOnEntryButton();//заполнение формы и нажатие на кнопку входа
 
 
         MainPageAuth objMainAuth = new MainPageAuth(driver);
-        new WebDriverWait(driver, Duration.ofSeconds(10)).
+        new WebDriverWait(driver, Duration.ofSeconds(10)).//логин успешен, если нашли эту кнопку
                 until(ExpectedConditions.visibilityOfElementLocated(objMainAuth.getButtonOrder()));
 
-        objMainAuth.clickOnPersonalCabinetLink();
+        objMainAuth.clickOnPersonalCabinetLink();//переход в Персональный кабинет
 
         ProfilePage objProfilePage = new ProfilePage(driver);
-        new WebDriverWait(driver, Duration.ofSeconds(10)).
+        new WebDriverWait(driver, Duration.ofSeconds(10)).//успешен, если нашли эту кнопку
                 until(ExpectedConditions.visibilityOfElementLocated(objProfilePage.getProfile()));
 
-        objProfilePage.clickOnConstructorLink();
+        objProfilePage.clickOnConstructorLink();// клик на линк Конструктор
         objMainAuth = new MainPageAuth(driver);
         new WebDriverWait(driver, Duration.ofSeconds(10)).
                 until(ExpectedConditions.visibilityOfElementLocated(objMainAuth.getButtonOrder()));
         objMainAuth.scrollToOrderButton();
         String tempString =
                 driver.findElement(objMainAuth.getButtonOrder()).getText();
-        MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));
+        MatcherAssert.assertThat(tempString, startsWith("Оформить заказ")); //успешен, если нашли эту кнопку
 
 
     }
 
 
-
+    @Step("Авторизация пользователя с целью получения токена")
     public String loginUser(String email, String password){ //авторизация пользователя, с целью получения токена
 
         Credentials credentials = new Credentials(email, password);
@@ -217,6 +220,7 @@ public class ProfilePageTest {
         return userToken;
     }
 
+    @Step("Удаление пользователя с токеном")
     public void deleteUser(String email, String password) {
         String userToken = loginUser(email, password);
         if (userToken != null)  {

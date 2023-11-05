@@ -17,20 +17,18 @@ public class MainPage {
     private By personalCabinetLink = By.xpath("//*[@id='root']/div/header/nav/a");
     //кнопка входа в аккаунт на странице
     private By toAccountButton = By.xpath("//*[@id='root']/div/main/section[2]/div/button");
-
+    //линк Булки
     private By bunsLink = By.xpath(".//div/main/section/div/div/span[text()='Булки']");
+    //линк Соусы
     private By saucesLink = By.xpath(".//div/main/section/div/div/span[text()='Соусы']");
+
+    //линк Начинки
     private By fillingsLink = By.xpath(".//div/main/section/div/div/span[text()='Начинки']");
 
-    private By saucesTitle = By.xpath(".//div/main/section/div/h2[text()='Соусы']");
-    private By fillingsTitle = By.xpath(".//div/main/section/div/h2[text()='Начинки']");
-    private By bunsTitle = By.xpath(".//div/main/section/div/h2[text()='Булки']");
-
-    private By meteorBeef = By.xpath(".//div/main/section[1]/div[2]/ul[3]/a[2]/p");
-
-    public MainPage(WebDriver driver){
+    public MainPage(WebDriver driver) {
         this.driver = driver;
     }
+
     public void clickOnPersonalCabinet() {
         driver.findElement(personalCabinetLink).click(); //клик на кнопку входа в личный кабинет в заголовке
     }
@@ -40,36 +38,17 @@ public class MainPage {
     }
 
     public void clickToBuns() {
-        driver.findElement(bunsLink).click(); //клик на кнопку
+        driver.findElement(bunsLink).click(); //клик на линк Булки
     }
 
 
-    public void clickToSauces() {
+    public void clickToSauces() { //клик на линк Соусы
         driver.findElement(saucesLink).click();
 
     }
 
-    public By getSaucesTitle() {
-        return saucesTitle;
-    }
+    public void clickToFillings() {//клик на линк Начинки
+        driver.findElement(fillingsLink).click();
 
-    public By getFillingsTitle() {
-        return fillingsTitle;
-    }
-
-    public By getBunsTitle() {
-        return bunsTitle;
-    }
-
-    public void clickToFillings() {
-        driver.findElement(fillingsLink).click(); //клик на кнопку
-     //   System.out.println(driver.findElement(fillingsLink).getText());
-    }
-
-    public By getMeteorBeef() {
-        return meteorBeef;
-    }
-    public void clickOnMeteorBeef(){
-        driver.findElement(meteorBeef).click();
     }
 }

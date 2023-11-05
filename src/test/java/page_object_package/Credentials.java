@@ -1,6 +1,6 @@
 package page_object_package;
 
-public class Credentials {
+public class Credentials { //пара логин-пароль для авторизации пользователя через апи
 
     private String email;
     private String password;

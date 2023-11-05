@@ -14,14 +14,14 @@ public class ForgotPasswordPage {
     private WebDriver driver;
 
 
-    private By entryLink = By.className("Auth_link__1fOlj");
+    private By entryLink = By.className("Auth_link__1fOlj"); //ссылка Войти под формой
 
 
     public ForgotPasswordPage(WebDriver driver) {
         this.driver = driver;
     }
 
-    public void clickOnEntryLink() {
+    public void clickOnEntryLink() { //клик на линк Войти под формой
         driver.findElement(entryLink).click();
     }
 }

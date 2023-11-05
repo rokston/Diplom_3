@@ -1,3 +1,4 @@
+import io.qameta.allure.Step;
 import org.hamcrest.MatcherAssert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriverService;
@@ -21,7 +22,7 @@ import static page_object_package.Constants.*;
 
 
 public class ConstructorTest {
-
+    @Step("Сетап браузера")
     public void setUpBrowser(){
         String browserType = Browser.BROWSER;
         if (browserType.equals("Yandex")){
@@ -30,6 +31,8 @@ public class ConstructorTest {
             setUpChrome();
         }
     }
+
+    @Step("Сетап браузера Хром")
     public void setUpChrome(){
         System.setProperty("webdriver.http.factory", "jdk-http-client");
         ChromeDriverService service = new ChromeDriverService.Builder()
@@ -41,6 +44,7 @@ public class ConstructorTest {
 
         driver = new ChromeDriver(service, options);}
 
+    @Step("Сетап браузера Яндекс")
     public void setUpYandex(){
         System.setProperty("webdriver.http.factory", "jdk-http-client");
         ChromeDriverService service = new ChromeDriverService.Builder()
@@ -55,20 +59,19 @@ public class ConstructorTest {
 
     @Test
     public void ConstructorTest(){
-        // setUpYandex();
         setUpBrowser();
-        driver.get(MAIN_PAGE_URL);
+        driver.get(MAIN_PAGE_URL);//открыть главную страницу
         MainPage objMainPage = new MainPage(driver);
-        objMainPage.clickToFillings();
-        new WebDriverWait(driver, Duration.ofSeconds(10)).
+        objMainPage.clickToFillings();//клик на линк Начинки
+        new WebDriverWait(driver, Duration.ofSeconds(10)). //ждем, что стиль на странице поменяется
                 until(ExpectedConditions.attributeContains(By.xpath(".//div/main/section[1]/div[1]/div[3]"), "class", "current"));
 
-        objMainPage.clickToSauces();
-        new WebDriverWait(driver, Duration.ofSeconds(10)).
+        objMainPage.clickToSauces(); //клик на линк Соусы
+        new WebDriverWait(driver, Duration.ofSeconds(10)). //ждем, что стиль на странице поменяется
                 until(ExpectedConditions.attributeContains(By.xpath(".//div/main/section[1]/div[1]/div[2]"), "class", "current"));
 
-         objMainPage.clickToBuns();
-         new WebDriverWait(driver, Duration.ofSeconds(10)).
+         objMainPage.clickToBuns();//клик на линк Булки
+         new WebDriverWait(driver, Duration.ofSeconds(10)). //ждем, что стиль на странице поменяется
            until(ExpectedConditions.attributeContains(By.xpath(".//div/main/section[1]/div[1]/div[1]"), "class", "current"));
 
     }
