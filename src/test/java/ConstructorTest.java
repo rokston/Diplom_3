@@ -1,4 +1,5 @@
 import org.hamcrest.MatcherAssert;
+import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import page_object_package.*;
@@ -21,6 +22,14 @@ import static page_object_package.Constants.*;
 
 public class ConstructorTest {
 
+    public void setUpBrowser(){
+        String browserType = Browser.BROWSER;
+        if (browserType.equals("Yandex")){
+            setUpYandex();
+        } else {
+            setUpChrome();
+        }
+    }
     public void setUpChrome(){
         System.setProperty("webdriver.http.factory", "jdk-http-client");
         ChromeDriverService service = new ChromeDriverService.Builder()
@@ -47,32 +56,24 @@ public class ConstructorTest {
     @Test
     public void ConstructorTest(){
         // setUpYandex();
-        setUpChrome();
+        setUpBrowser();
         driver.get(MAIN_PAGE_URL);
         MainPage objMainPage = new MainPage(driver);
-        //  objMainPage.clickToFillings();
-       //String tempString =
-        boolean isVisible = driver.findElement(objMainPage.getMeteorBeef()).isDisplayed();
-        //MatcherAssert.assertThat(tempString, startsWith("Говяжий"));
-        System.out.println(isVisible);
+        objMainPage.clickToFillings();
+        new WebDriverWait(driver, Duration.ofSeconds(10)).
+                until(ExpectedConditions.attributeContains(By.xpath(".//div/main/section[1]/div[1]/div[3]"), "class", "current"));
 
-        // objMainPage.clickOnMeteorBeef();
-     /*   objMainPage.clickToBuns();
-        tempString =
-                driver.findElement(objMainPage.getBunsTitle()).getText();
-        MatcherAssert.assertThat(tempString, startsWith("Булки"));
+        objMainPage.clickToSauces();
+        new WebDriverWait(driver, Duration.ofSeconds(10)).
+                until(ExpectedConditions.attributeContains(By.xpath(".//div/main/section[1]/div[1]/div[2]"), "class", "current"));
 
-        //objMainPage.clickToSauces();
-        tempString =
-                driver.findElement(objMainPage.getSaucesTitle() ).getText();
-        MatcherAssert.assertThat(tempString, startsWith("Соусы"));
-
-*/
+         objMainPage.clickToBuns();
+         new WebDriverWait(driver, Duration.ofSeconds(10)).
+           until(ExpectedConditions.attributeContains(By.xpath(".//div/main/section[1]/div[1]/div[1]"), "class", "current"));
 
     }
 
-
-    //@After
+    @After
     public void teardown() {
         // Закрываем браузер
         driver.quit();
