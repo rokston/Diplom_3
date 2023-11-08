@@ -202,7 +202,6 @@ public class ProfilePageTest extends BaseClass{
 
     @After
     public void userDelete(){
-
         deleteUser(email, password);
     }
 

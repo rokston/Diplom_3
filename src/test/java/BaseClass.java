@@ -1,3 +1,4 @@
+import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import org.junit.After;
@@ -11,10 +12,13 @@ import page_object_package.Browser;
 
 import java.io.File;
 
-import static page_object_package.Constants.*;
+import static page_object_package.Browser.YANDEX_BROWSER_CHROMEDRIVER;
+import static page_object_package.Browser.YANDEX_BROWSER_PATH;
+
 
 public class BaseClass {
-    WebDriver driver;
+   protected static WebDriver driver;
+    WebDriverManager WebDriverManager;
     @Before
 
      public void setUp() {
@@ -34,16 +38,9 @@ public class BaseClass {
 
     @Step("Сетап браузера Хром")
     public void setUpChrome() {
-        System.setProperty("webdriver.http.factory", "jdk-http-client");
-        ChromeDriverService service = new ChromeDriverService.Builder()
-                .usingDriverExecutable(new File(CHROME_TEST_CHROMEDRIVER))
-                .build();
-
-        ChromeOptions options = new ChromeOptions()
-                .setBinary(CHROME_TEST_BROWSER);
-
-        driver = new ChromeDriver(service, options);
-    }
+         WebDriverManager.chromedriver().setup();
+        driver = new ChromeDriver();
+     }
 
     @Step("Сетап браузера Яндекс")
     public void setUpYandex() {
@@ -53,6 +50,7 @@ public class BaseClass {
                 .build();
         ChromeOptions options = new ChromeOptions()
                 .setBinary(YANDEX_BROWSER_PATH);
+
         driver = new ChromeDriver(service, options);
     }
 
