@@ -14,7 +14,7 @@ public class MainPageAuth {
     private WebDriver driver;
 
 
-    public MainPageAuth(WebDriver driver){
+    public MainPageAuth(WebDriver driver) {
         this.driver = driver;
     }
 
@@ -27,7 +27,7 @@ public class MainPageAuth {
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);
     }
 
-    public void clickOnPersonalCabinetLink(){ //клик на ссылку на персональный кабинет
+    public void clickOnPersonalCabinetLink() { //клик на ссылку на персональный кабинет
         driver.findElement(personalCabinetLink).click();
     }
 

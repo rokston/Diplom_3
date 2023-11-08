@@ -17,12 +17,11 @@ import static page_object_package.Browser.YANDEX_BROWSER_PATH;
 
 
 public class BaseClass {
-   protected static WebDriver driver;
+    protected static WebDriver driver;
     WebDriverManager WebDriverManager;
     @Before
-
-     public void setUp() {
-       RestAssured.baseURI = ApiEndpoint.BASE_ADDRESS;
+    public void setUp() {
+        RestAssured.baseURI = ApiEndpoint.BASE_ADDRESS;
     }
 
     @Step("Сетап браузера")
@@ -38,9 +37,9 @@ public class BaseClass {
 
     @Step("Сетап браузера Хром")
     public void setUpChrome() {
-         WebDriverManager.chromedriver().setup();
+        WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
-     }
+    }
 
     @Step("Сетап браузера Яндекс")
     public void setUpYandex() {
@@ -55,6 +54,7 @@ public class BaseClass {
     }
 
     @After
+    @Step("Закрыть браузер")
     public void teardown() {
         // Закрываем браузер
         driver.quit();

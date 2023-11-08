@@ -1,29 +1,23 @@
 import io.qameta.allure.Step;
+import io.qameta.allure.junit4.DisplayName;
 import org.hamcrest.MatcherAssert;
-import org.openqa.selenium.chrome.ChromeDriverService;
-import org.openqa.selenium.chrome.ChromeOptions;
 import page_object_package.*;
 import org.junit.After;
 import org.junit.Test;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.junit.Before;
 import static io.restassured.RestAssured.given;
-import java.io.File;
 import java.time.Duration;
 import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertEquals;
 import static page_object_package.Constants.*;
 
 
-public class RegistrationTest extends BaseClass{
+public class RegistrationTest extends BaseClass {
 
-     @Test
-    public void registrationOkTest(){//успешная регистрация
+    @Test
+    @DisplayName("Успешная регистрация пользователя")
+    public void registrationOkTest() {//успешная регистрация
         driver.get(REGISTRATION_PAGE_URL);
         RegistrationPage objRegPage = new RegistrationPage(driver);
         String name = "Daria";
@@ -45,10 +39,11 @@ public class RegistrationTest extends BaseClass{
         String tempString =
                 driver.findElement(objMainAuth.getButtonOrder()).getText();
         MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));//успешен, если нашли эту кнопку
-
     }
+
     @Test
-    public void registrationBadPasswordTest(){//регистрация с коротким паролем, неудачная
+    @DisplayName("Неудачная регистрация пользоватля с коротким паролем")
+    public void registrationBadPasswordTest() {//регистрация с коротким паролем, неудачная
         driver.get(REGISTRATION_PAGE_URL);
         RegistrationPage objRegPage = new RegistrationPage(driver);
         String name = "Daria";
@@ -62,10 +57,10 @@ public class RegistrationTest extends BaseClass{
         String tempString =
                 driver.findElement(objRegPage.getErrorPassword()).getText();
         MatcherAssert.assertThat(tempString, startsWith("Некорректный пароль"));//ожидаемая ошибка
-         }
+    }
 
     @Step("Авторизация пользователя с целью получения токена")
-    public String loginUser(String email, String password){ //авторизация пользователя, с целью получения токена
+    public String loginUser(String email, String password) { //авторизация пользователя, с целью получения токена
 
         Credentials credentials = new Credentials(email, password);
         Response response =
@@ -80,8 +75,8 @@ public class RegistrationTest extends BaseClass{
         String userToken;
         if (code == 200) {
             userToken = response
-                    .then().extract().body().path("accessToken");}
-        else {
+                    .then().extract().body().path("accessToken");
+        } else {
             userToken = null;
         }
         return userToken;
@@ -90,7 +85,7 @@ public class RegistrationTest extends BaseClass{
     @Step("Удаление пользователя с токеном")
     public void deleteUser(String email, String password) {
         String userToken = loginUser(email, password);
-        if (userToken != null)  {
+        if (userToken != null) {
             Response response = given()
                     .header("Content-type", "application/json")
                     .header("Authorization", userToken)
@@ -101,22 +96,20 @@ public class RegistrationTest extends BaseClass{
                     .assertThat()
                     .statusCode(202);
 
-        }
-        else  {
+        } else {
             System.out.println("Cannot delete not existing user");
         }
 
     }
+    @After
+    @Step("Удаление пользователя")
+    public void userDelete() {
+        String name = "Daria";
+        String email = "dodo112@ya.ru";
+        String password = "пякпяк111";
+        deleteUser(email, password);
 
-   @After
-    public void userDelete(){
-       String name = "Daria";
-       String email = "dodo112@ya.ru";
-       String password = "пякпяк111";
-
-       deleteUser(email, password);
-
-       password = "пякпя";
-       deleteUser(email, password);
-   }
+        password = "пякпя";
+        deleteUser(email, password);
+    }
 }

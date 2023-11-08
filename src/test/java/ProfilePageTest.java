@@ -1,4 +1,5 @@
 import io.qameta.allure.Step;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import org.hamcrest.MatcherAssert;
 import org.junit.After;
@@ -8,32 +9,21 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import page_object_package.*;
 import java.time.Duration;
-
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static page_object_package.Constants.*;
 
-public class ProfilePageTest extends BaseClass{
+public class ProfilePageTest extends BaseClass {
     private String name = "Daria";//данные тестового пользователя
     private String email = "dodo112@ya.ru";
     private String password = "пякпяк111";
 
-    @Step("Регистрируемся как пользователь")
-    public void registerUser(WebDriver driver){
-        driver.get(REGISTRATION_PAGE_URL);
-        RegistrationPage objRegPage = new RegistrationPage(driver);
-        new WebDriverWait(driver, Duration.ofSeconds(10)).
-                until(ExpectedConditions.visibilityOfElementLocated(objRegPage.getButtonRegister()));
-        objRegPage.fillInRegistrationForm(name, email, password);
-        objRegPage.clickOnRegisterButton();
-    }
-
-
     @Test
-    public void loginPersonalCabinetTest(){//логин в Персональный кабинет, страница профиля и выход
+    @DisplayName("Логин в персональный кабинет, на страницу профиля с последующим выходом")
+    public void loginPersonalCabinetTest() {//логин в Персональный кабинет, страница профиля и выход
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
-        MainPage objMainPage =  new MainPage(driver);
+        MainPage objMainPage = new MainPage(driver);
 
         objMainPage.clickOnPersonalCabinet();//клик на Персональный кабинет
         LoginPage objLoginPage = new LoginPage(driver);
@@ -42,7 +32,6 @@ public class ProfilePageTest extends BaseClass{
         objLoginPage.findEntryTitle();
         objLoginPage.fillInLoginForm(email, password);//заполнение формы
         objLoginPage.clickOnEntryButton();//клик на кнопку входа
-
 
         MainPageAuth objMainAuth = new MainPageAuth(driver);
         new WebDriverWait(driver, Duration.ofSeconds(10)).//логин успешен, если нашли эту кнопку
@@ -70,10 +59,11 @@ public class ProfilePageTest extends BaseClass{
     }
 
     @Test
-    public void fromPersonalCabinetToMainPageTest(){
+    @DisplayName("Логин в персональный кабинет, переход на главную страницу")
+    public void fromPersonalCabinetToMainPageTest() {
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
-        MainPage objMainPage =  new MainPage(driver);
+        MainPage objMainPage = new MainPage(driver);
 
         objMainPage.clickOnPersonalCabinet();//клик на линк Персональный кабинет
         LoginPage objLoginPage = new LoginPage(driver);
@@ -102,16 +92,14 @@ public class ProfilePageTest extends BaseClass{
         String tempString =
                 driver.findElement(objMainAuth.getButtonOrder()).getText();
         MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));
-
-
     }
 
     @Test
-    public void fromPersonalCabinetToConstructorTest(){
+    @DisplayName("Логин в персональный кабинет, переход по линку Конструктор")
+    public void fromPersonalCabinetToConstructorTest() {
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
-        MainPage objMainPage =  new MainPage(driver);
-
+        MainPage objMainPage = new MainPage(driver);
         objMainPage.clickOnPersonalCabinet();//клик на линк Персональный кабинет
         LoginPage objLoginPage = new LoginPage(driver);
         new WebDriverWait(driver, Duration.ofSeconds(10)).
@@ -119,7 +107,6 @@ public class ProfilePageTest extends BaseClass{
         objLoginPage.findEntryTitle();
         objLoginPage.fillInLoginForm(email, password);
         objLoginPage.clickOnEntryButton();//заполнение формы и нажатие на кнопку входа
-
 
         MainPageAuth objMainAuth = new MainPageAuth(driver);
         new WebDriverWait(driver, Duration.ofSeconds(10)).//логин успешен, если нашли эту кнопку
@@ -139,13 +126,10 @@ public class ProfilePageTest extends BaseClass{
         String tempString =
                 driver.findElement(objMainAuth.getButtonOrder()).getText();
         MatcherAssert.assertThat(tempString, startsWith("Оформить заказ")); //успешен, если нашли эту кнопку
-
-
     }
 
-
     @Step("Авторизация пользователя с целью получения токена")
-    public String loginUser(String email, String password){ //авторизация пользователя, с целью получения токена
+    public String loginUser(String email, String password) { //авторизация пользователя, с целью получения токена
 
         Credentials credentials = new Credentials(email, password);
         Response response =
@@ -160,8 +144,8 @@ public class ProfilePageTest extends BaseClass{
         String userToken;
         if (code == 200) {
             userToken = response
-                    .then().extract().body().path("accessToken");}
-        else {
+                    .then().extract().body().path("accessToken");
+        } else {
             userToken = null;
         }
         return userToken;
@@ -170,7 +154,7 @@ public class ProfilePageTest extends BaseClass{
     @Step("Удаление пользователя с токеном")
     public void deleteUser(String email, String password) {
         String userToken = loginUser(email, password);
-        if (userToken != null)  {
+        if (userToken != null) {
             Response response = given()
                     .header("Content-type", "application/json")
                     .header("Authorization", userToken)
@@ -181,17 +165,24 @@ public class ProfilePageTest extends BaseClass{
                     .assertThat()
                     .statusCode(202);
 
-        }
-        else  {
+        } else {
             System.out.println("Cannot delete not existing user");
         }
+    }
 
+    @Step("Регистрируемся как пользователь")
+    public void registerUser(WebDriver driver) {
+        driver.get(REGISTRATION_PAGE_URL);
+        RegistrationPage objRegPage = new RegistrationPage(driver);
+        new WebDriverWait(driver, Duration.ofSeconds(10)).
+                until(ExpectedConditions.visibilityOfElementLocated(objRegPage.getButtonRegister()));
+        objRegPage.fillInRegistrationForm(name, email, password);
+        objRegPage.clickOnRegisterButton();
     }
 
     @After
+    @Step("Удаление пользователя")
     public void userDelete(){
-
         deleteUser(email, password);
     }
-
 }

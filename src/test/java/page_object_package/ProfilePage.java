@@ -15,12 +15,9 @@ public class ProfilePage {
     private By headerStellarBurgers = By.xpath(".//header/nav/div/a");
     //линк в заголовке на Конструктор
     private By constructorLink = By.xpath(".//header/nav/ul/li/a/p[text()='Конструктор']");
-
-
     private WebDriver driver;
 
-
-    public ProfilePage(WebDriver driver){
+    public ProfilePage(WebDriver driver) {
         this.driver = driver;
     }
 
@@ -32,16 +29,16 @@ public class ProfilePage {
         return orderList;
     }
 
-    public void clickOnExitButton(){
+    public void clickOnExitButton() {
         driver.findElement(exitButton).click();
     } //клик на Выход
 
-    public void clickOnStellarBurgers(){
+    public void clickOnStellarBurgers() {
         driver.findElement(headerStellarBurgers).click();
     } //клик на заголовок Stellar Burgers
 
     //клик на Конструктор
-    public void clickOnConstructorLink(){
+    public void clickOnConstructorLink() {
         driver.findElement(constructorLink).click();
     }
 }
