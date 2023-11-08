@@ -20,48 +20,11 @@ import static java.util.function.Predicate.isEqual;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static page_object_package.Constants.*;
-public class LoginTest {
+public class LoginTest extends BaseClass {
 
-    @Before
-    public void setUp() {
-        RestAssured.baseURI = ApiEndpoint.BASE_ADDRESS;
-    }
-    @Step("Сетап браузера")
-    public void setUpBrowser(){
-        String browserType = Browser.BROWSER;
-        if (browserType.equals("Yandex")){
-           setUpYandex();
-        } else {
-            setUpChrome();
-        }
-        }
-    @Step("Сетап браузера Хром")
-    public void setUpChrome(){
-        System.setProperty("webdriver.http.factory", "jdk-http-client");
-        ChromeDriverService service = new ChromeDriverService.Builder()
-                .usingDriverExecutable(new File(CHROME_TEST_CHROMEDRIVER))
-                .build();
-
-        ChromeOptions options = new ChromeOptions()
-                .setBinary(CHROME_TEST_BROWSER);
-
-        driver = new ChromeDriver(service, options);}
-
-    @Step("Сетап браузера Яндекс")
-    public void setUpYandex(){
-        System.setProperty("webdriver.http.factory", "jdk-http-client");
-        ChromeDriverService service = new ChromeDriverService.Builder()
-                .usingDriverExecutable(new File(YANDEX_BROWSER_CHROMEDRIVER))
-                .build();
-        ChromeOptions options = new ChromeOptions()
-                .setBinary(YANDEX_BROWSER_PATH);
-        driver = new ChromeDriver(service, options);
-    }
-
-    WebDriver driver;
-    String name = "Daria"; //данные тестового пользователя
-    String email = "dodo112@ya.ru";
-    String password = "пякпяк111";
+    private String name = "Daria"; //данные тестового пользователя
+    private String email = "dodo112@ya.ru";
+    private String password = "пякпяк111";
 
     @Step("Регистрируемся как пользователь")
     public void registerUser(WebDriver driver){
@@ -75,7 +38,6 @@ public class LoginTest {
 
     @Test
     public void loginFromMainPageAccountButtonTest(){//логин через кнопку Войти в аккаунт
-        setUpBrowser();
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
         MainPage objMainPage =  new MainPage(driver);
@@ -101,7 +63,7 @@ public class LoginTest {
 
     @Test
     public void loginFromMainPagePersonalCabinetTest(){//логин через Персональный кабинет
-        setUpBrowser();
+
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
         MainPage objMainPage =  new MainPage(driver);
@@ -129,7 +91,7 @@ public class LoginTest {
 
     @Test
     public void loginFromRegistrationPageLinkTest(){//логин через ссылку на странице регистрации
-        setUpBrowser();
+
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
         driver.get(REGISTRATION_PAGE_URL);
@@ -156,7 +118,6 @@ public class LoginTest {
 
     @Test
     public void loginFromForgotPasswordPageLinkTest(){//логин успешен по ссылке со страницы забытого пароля
-        setUpBrowser();
         registerUser(driver);
         driver.get(FORGOT_PASSWORD_URL);
         ForgotPasswordPage objForgotPassPage =  new ForgotPasswordPage(driver);
@@ -178,8 +139,6 @@ public class LoginTest {
         MatcherAssert.assertThat(tempString, startsWith("Оформить заказ"));//логин успешен, если нашли эту кнопку
 
     }
-
-
 
 
     @Step("Авторизация пользователя с целью получения токена")
@@ -227,13 +186,7 @@ public class LoginTest {
 
     @After
     public void userDelete(){
-
         deleteUser(email, password);
      }
-    @After
-    public void teardown() {
-        // Закрываем браузер
-        driver.quit();
-    }
 
 }

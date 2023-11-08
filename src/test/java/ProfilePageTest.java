@@ -25,48 +25,10 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static page_object_package.Constants.*;
 
-public class ProfilePageTest {
-
-    @Before
-    public void setUp() {
-        RestAssured.baseURI = ApiEndpoint.BASE_ADDRESS;
-    }
-    @Step("Сетап браузера")
-    public void setUpBrowser(){
-        String browserType = Browser.BROWSER;
-        if (browserType.equals("Yandex")){
-            setUpYandex();
-        } else {
-            setUpChrome();
-        }
-    }
-    @Step("Сетап браузера Хром")
-    public void setUpChrome(){
-        System.setProperty("webdriver.http.factory", "jdk-http-client");
-        ChromeDriverService service = new ChromeDriverService.Builder()
-                .usingDriverExecutable(new File(CHROME_TEST_CHROMEDRIVER))
-                .build();
-
-        ChromeOptions options = new ChromeOptions()
-                .setBinary(CHROME_TEST_BROWSER);
-
-        driver = new ChromeDriver(service, options);}
-
-    @Step("Сетап браузера Яндекс")
-    public void setUpYandex(){
-        System.setProperty("webdriver.http.factory", "jdk-http-client");
-        ChromeDriverService service = new ChromeDriverService.Builder()
-                .usingDriverExecutable(new File(YANDEX_BROWSER_CHROMEDRIVER))
-                .build();
-        ChromeOptions options = new ChromeOptions()
-                .setBinary(YANDEX_BROWSER_PATH);
-        driver = new ChromeDriver(service, options);
-    }
-
-    WebDriver driver;
-    String name = "Daria";//данные тестового пользователя
-    String email = "dodo112@ya.ru";
-    String password = "пякпяк111";
+public class ProfilePageTest extends BaseClass{
+    private String name = "Daria";//данные тестового пользователя
+    private String email = "dodo112@ya.ru";
+    private String password = "пякпяк111";
 
     @Step("Регистрируемся как пользователь")
     public void registerUser(WebDriver driver){
@@ -81,7 +43,6 @@ public class ProfilePageTest {
 
     @Test
     public void loginPersonalCabinetTest(){//логин в Персональный кабинет, страница профиля и выход
-        setUpBrowser();
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
         MainPage objMainPage =  new MainPage(driver);
@@ -122,7 +83,6 @@ public class ProfilePageTest {
 
     @Test
     public void fromPersonalCabinetToMainPageTest(){
-        setUpBrowser();
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
         MainPage objMainPage =  new MainPage(driver);
@@ -160,7 +120,6 @@ public class ProfilePageTest {
 
     @Test
     public void fromPersonalCabinetToConstructorTest(){
-        setUpBrowser();
         registerUser(driver);
         driver.get(MAIN_PAGE_URL);
         MainPage objMainPage =  new MainPage(driver);
@@ -245,11 +204,6 @@ public class ProfilePageTest {
     public void userDelete(){
 
         deleteUser(email, password);
-    }
-    @After
-    public void teardown() {
-        // Закрываем браузер
-        driver.quit();
     }
 
 }

@@ -20,49 +20,10 @@ import static org.junit.Assert.assertEquals;
 import static page_object_package.Constants.*;
 
 
-public class RegistrationTest {
-    @Before
-    public void setUp() {
-        RestAssured.baseURI = ApiEndpoint.BASE_ADDRESS;
-    }
-
-    @Step("Сетап браузера")
-    public void setUpBrowser(){
-        String browserType = Browser.BROWSER;
-        if (browserType.equals("Yandex")){
-            setUpYandex();
-        } else {
-            setUpChrome();
-        }
-    }
-    @Step("Сетап браузера Хром")
-    public void setUpChrome(){
-        System.setProperty("webdriver.http.factory", "jdk-http-client");
-        ChromeDriverService service = new ChromeDriverService.Builder()
-                .usingDriverExecutable(new File(CHROME_TEST_CHROMEDRIVER))
-                .build();
-
-        ChromeOptions options = new ChromeOptions()
-                .setBinary(CHROME_TEST_BROWSER);
-
-    driver = new ChromeDriver(service, options);}
-
-    @Step("Сетап браузера Яндекс")
-    public void setUpYandex(){
-        System.setProperty("webdriver.http.factory", "jdk-http-client");
-        ChromeDriverService service = new ChromeDriverService.Builder()
-                .usingDriverExecutable(new File(YANDEX_BROWSER_CHROMEDRIVER))
-                .build();
-        ChromeOptions options = new ChromeOptions()
-                .setBinary(YANDEX_BROWSER_PATH);
-        driver = new ChromeDriver(service, options);
-    }
-
-    WebDriver driver;
+public class RegistrationTest extends BaseClass{
 
      @Test
     public void registrationOkTest(){//успешная регистрация
-        setUpBrowser();
         driver.get(REGISTRATION_PAGE_URL);
         RegistrationPage objRegPage = new RegistrationPage(driver);
         String name = "Daria";
@@ -88,7 +49,6 @@ public class RegistrationTest {
     }
     @Test
     public void registrationBadPasswordTest(){//регистрация с коротким паролем, неудачная
-        setUpBrowser();
         driver.get(REGISTRATION_PAGE_URL);
         RegistrationPage objRegPage = new RegistrationPage(driver);
         String name = "Daria";
@@ -159,10 +119,4 @@ public class RegistrationTest {
        password = "пякпя";
        deleteUser(email, password);
    }
-  @After
-    public void teardown() {
-        // Закрываем браузер
-        driver.quit();
-    }
-
 }
