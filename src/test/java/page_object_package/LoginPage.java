@@ -10,9 +10,11 @@ public class LoginPage {
     //надпись Вход над формой
     private By entryTitle = By.xpath(".//div[@class='Auth_login__3hAey']/h2[text()='Вход']");
     // поле Email
-    private By fieldEmail = By.xpath(".//div/main/div/form/fieldset[1]/div/div/input");
+    private By fieldEmail = By.xpath(".//div/div/input[@name = 'name']");
+
     // поле Пароль
-    private By fieldPassword = By.xpath(".//div/main/div/form/fieldset[2]/div/div/input");
+    private By fieldPassword = By.xpath("//div/div/input[@name = 'Пароль']");
+            //".//div/main/div/form/fieldset[2]/div/div/input");
     // кнопка входа
     private By buttonLogin = By.xpath(".//form/button[text()='Войти']");
 
