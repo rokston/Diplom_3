@@ -21,6 +21,17 @@ public class BaseClass extends ExternalResource {
         RestAssured.baseURI = ApiEndpoint.BASE_ADDRESS;
     }
 
+    @Override
+    protected void before() throws Throwable {
+        System.setProperty("webdriver.http.factory", "jdk-http-client");
+
+        if ("yandex".equals(System.getProperty("browser")))
+            setUpYandex();
+        else
+            setUpChrome();
+
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+    }
     @Step("Сетап браузера")
     @Before
     public void setUpBrowser() {
