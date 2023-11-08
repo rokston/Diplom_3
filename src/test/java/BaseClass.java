@@ -9,9 +9,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import page_object_package.ApiEndpoint;
-import page_object_package.Browser;
 
 import java.io.File;
+import java.time.Duration;
 
 public class BaseClass extends ExternalResource {
     protected static WebDriver driver;
@@ -22,26 +22,16 @@ public class BaseClass extends ExternalResource {
     }
 
     @Override
-    protected void before() throws Throwable {
+    @Before
+    @Step("Сетап браузера")
+    public void before() throws Throwable {
         System.setProperty("webdriver.http.factory", "jdk-http-client");
 
         if ("yandex".equals(System.getProperty("browser")))
             setUpYandex();
         else
             setUpChrome();
-
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-    }
-    @Step("Сетап браузера")
-    @Before
-    public void setUpBrowser() {
-        String browserType = Browser.BROWSER;
-        if (browserType.equals("Yandex")) {
-       // if ("yandex".equals(System.getProperty("browser"))){
-            setUpYandex();
-        } else {
-            setUpChrome();
-        }
     }
 
     @Step("Сетап браузера Хром")
@@ -50,17 +40,8 @@ public class BaseClass extends ExternalResource {
         driver = new ChromeDriver();
     }
 
-
-
     @Step("Сетап браузера Яндекс")
     public void setUpYandex() {
-      /*  System.setProperty("webdriver.http.factory", "jdk-http-client");
-        ChromeDriverService service = new ChromeDriverService.Builder()
-                .usingDriverExecutable(new File(YANDEX_BROWSER_CHROMEDRIVER))
-                .build();
-        ChromeOptions options = new ChromeOptions()
-                .setBinary(YANDEX_BROWSER_PATH);
-*/
         ChromeDriverService service = new ChromeDriverService.Builder()
                 .usingDriverExecutable(new File(EnvConfig.YANDEX_DRIVER))
                 .build();
@@ -68,7 +49,6 @@ public class BaseClass extends ExternalResource {
                 .setBinary(EnvConfig.YANDEX_BINARY);
 
         driver = new ChromeDriver(service, options);
-       // driver = new ChromeDriver(service, options);
     }
 
     @After

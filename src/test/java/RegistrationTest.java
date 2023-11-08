@@ -14,7 +14,6 @@ import static page_object_package.Constants.*;
 
 
 public class RegistrationTest extends BaseClass {
-
     @Test
     @DisplayName("Успешная регистрация пользователя")
     public void registrationOkTest() {//успешная регистрация
